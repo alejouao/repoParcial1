@@ -1,0 +1,9 @@
+default menu.c32
+prompt 0
+timeout 100
+ontimeout INSTALL
+menu title Boot Menu
+label INSTALL
+	menu label Install
+	kernel archlinux/vmlinuz-linux
+	append initrd=archlinux/initramfs-linux.img ip=dhcp

@@ -1,0 +1,23 @@
+#
+# DHCP Server Configuration file.
+#   see /usr/share/doc/dhcp-server/dhcpd.conf.example
+#   see dhcpd.conf(5) man page
+#
+authoritative; #Hace que el servidor pueda enviar mensajes DHCPNACK a quienes envian un DHCPREQUEST por una IP no valida
+option domain-name "server.servidorPXE.com"; #Nombre del servidor PXE
+option domain-name-servers 192.168.50.3; #Especifica la direccion IP del servidor PXE
+
+default-lease-time 500; #Indica el tiempo para conceder una IP cuando el cliente no indica ningun tiempo en su solicitud
+max-lease-time 7000; #Indica el tiempo maximo para otorgar una direccion IP
+
+subnet 192.168.50.0 netmask 255.255.255.0 {
+	range dynamic-bootp 192.168.50.10 192.168.50.40; #protocolo para que los clientes obtengan su IP automaticamente
+	option broadcast-address 192.168.50.255; #se envia al cliente la direccion broadcast de la subred que pertenece
+	option routers 192.168.50.0; #se usa para enviarle al cliente su puerta de enlace
+	
+	class "pxeclients" {
+		match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
+		next-server 192.168.50.3;
+		filename "pxelinux.0";
+	}
+}
